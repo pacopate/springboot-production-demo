@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +17,6 @@ import impactotecnologico.challenge.pooling.car.services.GroupService;
 import impactotecnologico.challenge.pooling.car.utils.Verifications;
 
 @RestController
-@RequestMapping("/journey")
 public class JourneyRestController extends AbstractController {
 
 	@Autowired
@@ -27,9 +25,9 @@ public class JourneyRestController extends AbstractController {
 	@Autowired
 	GroupService groupService;
 
-	@PostMapping
+	@PostMapping("/journey")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Group> update(@RequestBody Group group) throws IllegalArgumentException {
+	public ResponseEntity<Group> registerGroup(@RequestBody Group group) throws IllegalArgumentException {
 		Verifications.checkIfNotNull(group);
 
 		if (group.getId() <= 0 || group.getPeople() <= 0) {

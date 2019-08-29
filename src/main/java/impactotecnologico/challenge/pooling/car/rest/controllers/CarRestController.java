@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import impactotecnologico.challenge.pooling.car.models.Car;
-import impactotecnologico.challenge.pooling.car.rest.exceptions.RefreshingDataException;
-import impactotecnologico.challenge.pooling.car.rest.utils.Verifications;
+import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
 import impactotecnologico.challenge.pooling.car.services.CarService;
+import impactotecnologico.challenge.pooling.car.utils.Verifications;
 
 @RestController
 @RequestMapping("/cars")
@@ -28,17 +28,25 @@ public class CarRestController extends AbstractController {
 	@PutMapping
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<List<Car>> update(@RequestBody List<Car> cars) throws IllegalArgumentException {
-		Verifications.checkIsEmpty(cars);
+		Verifications.checkIfNotNull(cars);
+
+		cars.stream().anyMatch(any -> {
+			if (any.getId() <= 0 || any.getSeats() <= 0) {
+				throw new IllegalArgumentException();
+			}
+			return true;
+		});
+
 		Optional<List<Car>> carsUpdated = this.carService.refreshCarsAvailability(cars);
 		if (carsUpdated.isPresent()) {
 			List<Car> data = carsUpdated.get();
 			if (CollectionUtils.isEmpty(data) || data.size() != cars.size()) {
-				throw new RefreshingDataException();
+				throw new ProcessingDataException();
 			} else {
 				return responseWithCollection(data);
 			}
 		} else {
-			throw new RefreshingDataException();
+			throw new ProcessingDataException();
 		}
 	}
 

@@ -16,4 +16,10 @@ public abstract class AbstractController {
 		return new ResponseEntity<>(data, headers, HttpStatus.OK);
 	}
 
+	protected <T> ResponseEntity<T> responseWithEntity(T object) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
+		return new ResponseEntity<>(object, headers, HttpStatus.OK);
+	}
+
 }

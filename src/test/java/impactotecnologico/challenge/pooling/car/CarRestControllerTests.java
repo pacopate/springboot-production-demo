@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import impactotecnologico.challenge.pooling.car.models.Car;
 import impactotecnologico.challenge.pooling.car.repositories.CarRepository;
 import impactotecnologico.challenge.pooling.car.rest.controllers.CarRestController;
-import impactotecnologico.challenge.pooling.car.rest.exceptions.RefreshingDataException;
+import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
 import impactotecnologico.challenge.pooling.car.services.CarService;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -100,7 +100,7 @@ public class CarRestControllerTests extends AbstractTest {
 
 	}
 
-	@Test(expected = RefreshingDataException.class)
+	@Test(expected = ProcessingDataException.class)
 	public void whenDeleteAllFails() {
 
 		Mockito.doReturn(1L).when(carRepository).count();
@@ -117,6 +117,24 @@ public class CarRestControllerTests extends AbstractTest {
 	public void whenEmptyListReceived() {
 		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(new LinkedList<Car>());
 		carRestController.update(new LinkedList<Car>());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void whenListWithZeroReceivedv1() {
+		LinkedList<Car> cars = new LinkedList<Car>();
+		cars.add(new Car(new ObjectId(), 1, 0));
+
+		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(cars);
+		carRestController.update(cars);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void whenListWithZeroReceivedv2() {
+		LinkedList<Car> cars = new LinkedList<Car>();
+		cars.add(new Car(new ObjectId(), 0, 1));
+
+		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(cars);
+		carRestController.update(cars);
 	}
 
 	@Test
@@ -138,7 +156,7 @@ public class CarRestControllerTests extends AbstractTest {
 
 	}
 
-	@Test(expected = RefreshingDataException.class)
+	@Test(expected = ProcessingDataException.class)
 	public void whenSaveAllFailsv1() {
 
 		List<Car> cars = onlyOneCarGenerator();
@@ -149,7 +167,7 @@ public class CarRestControllerTests extends AbstractTest {
 
 	}
 
-	@Test(expected = RefreshingDataException.class)
+	@Test(expected = ProcessingDataException.class)
 	public void whenSaveAllFailsv2() {
 
 		List<Car> cars = carsGenerator();
@@ -159,7 +177,7 @@ public class CarRestControllerTests extends AbstractTest {
 
 	}
 
-	@Test(expected = RefreshingDataException.class)
+	@Test(expected = ProcessingDataException.class)
 	public void whenSaveAllFailsv3() {
 
 		List<Car> cars = carsGenerator();

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import impactotecnologico.challenge.pooling.car.rest.exceptions.RefreshingDataException;
+import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
 import impactotecnologico.challenge.pooling.car.rest.exceptions.handlers.enums.ExceptionResponse;
 
 @ControllerAdvice
@@ -75,9 +75,8 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 
 	// 500
 
-	@ExceptionHandler({ NullPointerException.class, IllegalStateException.class, RefreshingDataException.class })
+	@ExceptionHandler({ NullPointerException.class, IllegalStateException.class, ProcessingDataException.class })
 	public ResponseEntity<Object> handleInternal(final RuntimeException ex, final WebRequest request) {
-
 		logger.error("500 Status Code", ex);
 		return handleExceptionInternal(ex, createResponseMessage(ExceptionResponse.BIG_PROBLEM, ex.getMessage()),
 				JSON_HEADER, HttpStatus.INTERNAL_SERVER_ERROR, request);

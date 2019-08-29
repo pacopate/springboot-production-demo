@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import impactotecnologico.challenge.pooling.car.models.Car;
 import impactotecnologico.challenge.pooling.car.repositories.CarRepository;
-import impactotecnologico.challenge.pooling.car.rest.utils.Verifications;
+import impactotecnologico.challenge.pooling.car.utils.Verifications;
 
 @Component
 public class CarServiceImpl implements CarService {
@@ -19,7 +19,7 @@ public class CarServiceImpl implements CarService {
 	@Override
 	public Optional<List<Car>> refreshCarsAvailability(List<Car> cars) {
 
-		Verifications.checkIsEmpty(cars);
+		Verifications.checkIfNotNull(cars);
 
 		this.carRepository.deleteAll();
 		if (this.carRepository.count() == 0) {

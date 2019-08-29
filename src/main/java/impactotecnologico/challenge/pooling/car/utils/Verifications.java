@@ -14,9 +14,6 @@ public abstract class Verifications {
 		Preconditions.checkNotNull(object);
 		if (object instanceof Collection<?> && CollectionUtils.isEmpty((Collection<?>) object)) {
 			throw new IllegalArgumentException(ExceptionResponse.INVALID_CONTENT.message());
-		} else {
-			// boolean validate = Stream.of(object).allMatch(val -> val.getId() > 0 &&
-			// val.getPeople() > 0);
 		}
 	}
 }

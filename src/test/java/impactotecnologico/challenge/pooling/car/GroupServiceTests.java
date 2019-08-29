@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import impactotecnologico.challenge.pooling.car.models.Group;
 import impactotecnologico.challenge.pooling.car.repositories.GroupRepository;
+import impactotecnologico.challenge.pooling.car.rest.exceptions.GroupNotFoundException;
 import impactotecnologico.challenge.pooling.car.services.GroupServiceImpl;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -48,6 +49,26 @@ public class GroupServiceTests extends AbstractTest {
 		Group g = new Group();
 
 		groupServiceImpl.registerGroupForJourney(g);
+
+	}
+
+	@Test
+	public void unregisterOk() {
+
+		Mockito.doReturn(Optional.of(Group.class)).when(groupRepository).findOneByExternalId(1);
+
+		Optional<Boolean> unregisterOk = groupServiceImpl.unregisterGroupById(1);
+
+		Assert.assertTrue(unregisterOk.get());
+
+	}
+
+	@Test(expected = GroupNotFoundException.class)
+	public void unregisterWhenNotFound() {
+
+		Mockito.doReturn(Optional.empty()).when(groupRepository).findOneByExternalId(1);
+
+		groupServiceImpl.unregisterGroupById(1);
 
 	}
 

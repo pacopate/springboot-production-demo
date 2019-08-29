@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import impactotecnologico.challenge.pooling.car.rest.exceptions.GroupNotFoundException;
 import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
 import impactotecnologico.challenge.pooling.car.rest.exceptions.handlers.enums.ExceptionResponse;
 
@@ -50,11 +51,11 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 
 	// 404
 
-//	@ExceptionHandler(value = { EntityNotFoundException.class, MyResourceNotFoundException.class })
-//	protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
-//		final String bodyOfResponse = "This should be application specific";
-//		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-//	}
+	@ExceptionHandler(value = { GroupNotFoundException.class })
+	protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
+		return handleExceptionInternal(ex, createResponseMessage(ExceptionResponse.NOT_FOUND, null), JSON_HEADER,
+				HttpStatus.NOT_FOUND, request);
+	}
 
 	// 409
 

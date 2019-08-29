@@ -11,4 +11,6 @@ public interface GroupService {
 
 	Optional<Group> registerGroupForJourney(Group group);
 
+	Optional<Boolean> unregisterGroupById(Integer id);
+
 }

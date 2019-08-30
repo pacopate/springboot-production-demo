@@ -55,5 +55,4 @@ public class JourneyRestController extends AbstractController {
 
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
-
 }

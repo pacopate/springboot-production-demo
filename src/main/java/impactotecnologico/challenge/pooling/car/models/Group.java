@@ -32,8 +32,4 @@ public class Group {
 	@Setter
 	private int people;
 
-	@Getter
-	@Setter
-	@JsonIgnore
-	private boolean traveling;
 }

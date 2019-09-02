@@ -45,11 +45,9 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException ex,
 			final HttpHeaders headers, final HttpStatus status, final WebRequest request) {
-		final String bodyOfResponse = "This should be application specific handleMethodArgumentNotValid";
+		final String bodyOfResponse = "handleMethodArgumentNotValid";
 		return handleExceptionInternal(ex, bodyOfResponse, headers, HttpStatus.BAD_REQUEST, request);
 	}
-
-	// 404
 
 	@ExceptionHandler(value = { EntityNotFoundException.class })
 	protected ResponseEntity<Object> handleNotFound(final RuntimeException ex, final WebRequest request) {
@@ -61,7 +59,7 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
 
 	@ExceptionHandler({ InvalidDataAccessApiUsageException.class, DataAccessException.class })
 	protected ResponseEntity<Object> handleConflict(final RuntimeException ex, final WebRequest request) {
-		final String bodyOfResponse = "This should be application specific handleConflict";
+		final String bodyOfResponse = "I need to handleConflict";
 		return handleExceptionInternal(ex, bodyOfResponse, JSON_HEADER, HttpStatus.CONFLICT, request);
 	}
 

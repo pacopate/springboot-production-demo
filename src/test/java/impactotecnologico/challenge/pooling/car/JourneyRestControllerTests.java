@@ -105,7 +105,7 @@ public class JourneyRestControllerTests extends AbstractTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void registerTestInvalidInputv3() {
 
-		Group g = new Group(new ObjectId(), 0, 1, false);
+		Group g = new Group(new ObjectId(), 0, 1);
 
 		journeyRestController.registerGroup(g);
 	}
@@ -113,7 +113,7 @@ public class JourneyRestControllerTests extends AbstractTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void registerTestInvalidInputv4() {
 
-		Group g = new Group(new ObjectId(), 1, 0, false);
+		Group g = new Group(new ObjectId(), 1, 0);
 
 		journeyRestController.registerGroup(g);
 	}
@@ -144,7 +144,7 @@ public class JourneyRestControllerTests extends AbstractTest {
 	public void registerTestStatusCode400() throws Exception {
 		String uri = "/journey";
 
-		Group invalidGroup = new Group(new ObjectId(), 1, 0, false);
+		Group invalidGroup = new Group(new ObjectId(), 1, 0);
 
 		String inputJson = super.mapToJson(invalidGroup);
 		MvcResult mvcResult = mockMvc.perform(
@@ -171,7 +171,7 @@ public class JourneyRestControllerTests extends AbstractTest {
 	}
 
 	private Group generateValidGroup() {
-		Group valid = new Group(new ObjectId(), 1, 5, false);
+		Group valid = new Group(new ObjectId(), 1, 5);
 		return valid;
 	}
 

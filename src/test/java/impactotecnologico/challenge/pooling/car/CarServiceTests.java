@@ -22,11 +22,13 @@ import impactotecnologico.challenge.pooling.car.services.CarServiceImpl;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CarServiceTests extends AbstractTest {
 
+	private static final int SEATS = 5;
+
 	@Mock
-	private CarRepository carRepository;
+	private CarRepository carRepositoryMock;
 
 	@InjectMocks
-	private CarServiceImpl carServiceMock;
+	private CarServiceImpl carService;
 
 	@Override
 	@Before
@@ -35,37 +37,87 @@ public class CarServiceTests extends AbstractTest {
 	}
 
 	@Test
-	public void whenIsOk() {
+	public void whenRefreshIsOk() {
 
 		List<Car> cars = new ArrayList<Car>();
 		cars.add(new Car(new ObjectId(), 1, 1, 0, new Group()));
 
-		Mockito.doReturn(cars).when(carRepository).saveAll(cars);
-		Optional<List<Car>> carsReturn = carServiceMock.refreshCarsAvailability(cars);
+		Mockito.doReturn(cars).when(carRepositoryMock).saveAll(cars);
+		Optional<List<Car>> carsReturn = carService.refreshCarsAvailability(cars);
 
 		Assert.assertEquals(Optional.of(cars), carsReturn);
 
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void whenInputListIsEmpty() {
+	public void whenInputListForRefreshIsEmpty() {
 		List<Car> cars = new ArrayList<Car>();
 
-		carServiceMock.refreshCarsAvailability(cars);
+		carService.refreshCarsAvailability(cars);
 
 	}
 
 	@Test
 	public void whenDeleteAllFails() {
 
-		Mockito.doReturn(1L).when(carRepository).count();
+		Mockito.doReturn(1L).when(carRepositoryMock).count();
 
 		List<Car> cars = new ArrayList<Car>();
 		cars.add(new Car(new ObjectId(), 1, 1, 1, new Group()));
 
-		Optional<List<Car>> carsReturn = carServiceMock.refreshCarsAvailability(cars);
+		Optional<List<Car>> carsReturn = carService.refreshCarsAvailability(cars);
 
 		Assert.assertFalse(carsReturn.isPresent());
+
+	}
+
+	@Test
+	public void whenACarHasThatTravelers() {
+		Group travelers = new Group();
+
+		Mockito.doReturn(Optional.of(new Car())).when(carRepositoryMock).findOneByTravelers(travelers);
+
+		Assert.assertTrue(carService.findCarByTravelers(travelers).isPresent());
+	}
+
+	@Test
+	public void whenAnyCarHasThatTravelers() {
+		Group travelers = new Group();
+
+		Mockito.doReturn(Optional.empty()).when(carRepositoryMock).findOneByTravelers(travelers);
+
+		Assert.assertFalse(carService.findCarByTravelers(travelers).isPresent());
+	}
+
+	@Test
+	public void whenUnavailableSeatsForAssigningCar() {
+
+		Group g = new Group(null, 0, SEATS);
+
+		Mockito.doReturn(Optional.empty()).when(carRepositoryMock).findOneBySeatsAvailables(g.getPeople());
+
+		Assert.assertFalse(carService.assignGroupToCar(g).get());
+	}
+
+	@Test
+	public void whenTheAreAvailableSeatsForAssigningCar() {
+
+		Car c = new Car();
+		Group g = new Group(null, 0, SEATS);
+
+		Mockito.doReturn(Optional.of(c)).when(carRepositoryMock).findOneBySeatsAvailables(g.getPeople());
+
+		Assert.assertTrue(carService.assignGroupToCar(g).get());
+	}
+
+	@Test
+	public void whenGoupIsUnassignToCar() {
+		Car c = new Car();
+		Group g = new Group(null, 0, SEATS);
+
+		Mockito.doReturn(Optional.of(c)).when(carRepositoryMock).findOneByTravelers(g);
+
+		Assert.assertTrue(carService.unassignGroupToCar(g).get());
 
 	}
 

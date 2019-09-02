@@ -36,38 +36,49 @@ public class CarServiceImpl implements CarService {
 
 	@Override
 	public Optional<Boolean> assignGroupToCar(Group toAssign) {
+
+		Verifications.checkIfNotNull(toAssign);
+
 		Optional<Car> car = this.carRepository.findOneBySeatsAvailables(toAssign.getPeople());
-		if (car.isPresent()) {
-			Car c = car.get();
-			c.setTravelers(toAssign);
-			c.setSeatsAvailables(c.getSeatsAvailables() - toAssign.getPeople());
-			this.carRepository.save(c);
-			return Optional.of(true);
-		} else {
-			return Optional.of(false);
-		}
+
+		return createReturn(toAssign, car, false);
 	}
 
 	@Override
 	public Optional<Boolean> unassignGroupToCar(Group toUnassign) {
 
+		Verifications.checkIfNotNull(toUnassign);
+
 		Optional<Car> car = this.carRepository.findOneByTravelers(toUnassign);
 
-		if (car.isPresent()) {
-			Car c = car.get();
-			c.setTravelers(null);
-			c.setSeatsAvailables(c.getSeatsAvailables() + toUnassign.getPeople());
-			this.carRepository.save(c);
-			return Optional.of(true);
-		} else {
-			return Optional.of(false);
-		}
+		return createReturn(toUnassign, car, true);
 
 	}
 
 	@Override
 	public Optional<Car> findCarByTravelers(Group travelers) {
+
+		Verifications.checkIfNotNull(travelers);
+
 		return this.carRepository.findOneByTravelers(travelers);
+	}
+
+	private Optional<Boolean> createReturn(Group group, Optional<Car> car, boolean sum) {
+		if (car.isPresent()) {
+			Car c = car.get();
+			if (sum) {
+				c.setSeatsAvailables(c.getSeatsAvailables() + group.getPeople());
+				c.setTravelers(null);
+			} else {
+				c.setSeatsAvailables(c.getSeatsAvailables() - group.getPeople());
+				c.setTravelers(group);
+			}
+
+			this.carRepository.save(c);
+			return Optional.of(true);
+		} else {
+			return Optional.of(false);
+		}
 	}
 
 }

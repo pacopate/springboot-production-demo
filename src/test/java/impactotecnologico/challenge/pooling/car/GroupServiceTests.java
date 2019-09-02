@@ -35,7 +35,7 @@ public class GroupServiceTests extends AbstractTest {
 	@Test
 	public void whenIsOk() {
 
-		Group g = new Group(new ObjectId(), 1, 1, true);
+		Group g = new Group(new ObjectId(), 1, 1);
 
 		Mockito.doReturn(g).when(groupRepository).save(g);
 		Optional<Group> groupReturned = groupServiceImpl.registerGroupForJourney(g);

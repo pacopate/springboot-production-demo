@@ -74,12 +74,10 @@ public class CarRestController extends AbstractController {
 			if (car.isPresent()) {
 				return responseWithEntity(car.get());
 			} else {
-				throw new EntityNotFoundException();
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-
 		} else {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			throw new EntityNotFoundException();
 		}
 	}
-
 }

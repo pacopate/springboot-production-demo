@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import impactotecnologico.challenge.pooling.car.models.Car;
+import impactotecnologico.challenge.pooling.car.models.Group;
 import impactotecnologico.challenge.pooling.car.repositories.CarRepository;
 import impactotecnologico.challenge.pooling.car.services.CarServiceImpl;
 
@@ -37,7 +38,7 @@ public class CarServiceTests extends AbstractTest {
 	public void whenIsOk() {
 
 		List<Car> cars = new ArrayList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 1));
+		cars.add(new Car(new ObjectId(), 1, 1, 0, new Group()));
 
 		Mockito.doReturn(cars).when(carRepository).saveAll(cars);
 		Optional<List<Car>> carsReturn = carServiceMock.refreshCarsAvailability(cars);
@@ -60,7 +61,7 @@ public class CarServiceTests extends AbstractTest {
 		Mockito.doReturn(1L).when(carRepository).count();
 
 		List<Car> cars = new ArrayList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 1));
+		cars.add(new Car(new ObjectId(), 1, 1, 1, new Group()));
 
 		Optional<List<Car>> carsReturn = carServiceMock.refreshCarsAvailability(cars);
 

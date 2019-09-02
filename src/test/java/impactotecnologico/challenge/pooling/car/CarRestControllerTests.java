@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import impactotecnologico.challenge.pooling.car.models.Car;
+import impactotecnologico.challenge.pooling.car.models.Group;
 import impactotecnologico.challenge.pooling.car.repositories.CarRepository;
 import impactotecnologico.challenge.pooling.car.rest.controllers.CarRestController;
 import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
@@ -122,7 +123,7 @@ public class CarRestControllerTests extends AbstractTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void whenListWithZeroReceivedv1() {
 		LinkedList<Car> cars = new LinkedList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 0));
+		cars.add(new Car(new ObjectId(), 1, 0, 0, new Group()));
 
 		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(cars);
 		carRestController.update(cars);
@@ -131,7 +132,7 @@ public class CarRestControllerTests extends AbstractTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void whenListWithZeroReceivedv2() {
 		LinkedList<Car> cars = new LinkedList<Car>();
-		cars.add(new Car(new ObjectId(), 0, 1));
+		cars.add(new Car(new ObjectId(), 0, 1, 0, new Group()));
 
 		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(cars);
 		carRestController.update(cars);
@@ -183,7 +184,7 @@ public class CarRestControllerTests extends AbstractTest {
 		List<Car> cars = carsGenerator();
 
 		List<Car> carsReturnedByService = new ArrayList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 1));
+		cars.add(new Car(new ObjectId(), 1, 1, 1, new Group()));
 
 		Mockito.doReturn(Optional.of(carsReturnedByService)).when(carServiceMock).refreshCarsAvailability(cars);
 		carRestController.update(cars);
@@ -192,14 +193,14 @@ public class CarRestControllerTests extends AbstractTest {
 
 	private List<Car> carsGenerator() {
 		List<Car> cars = new ArrayList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 1));
-		cars.add(new Car(new ObjectId(), 2, 2));
+		cars.add(new Car(new ObjectId(), 1, 1, 0, new Group()));
+		cars.add(new Car(new ObjectId(), 2, 2, 0, new Group()));
 		return cars;
 	}
 
 	private List<Car> onlyOneCarGenerator() {
 		List<Car> cars = new ArrayList<Car>();
-		cars.add(new Car(new ObjectId(), 1, 1));
+		cars.add(new Car(new ObjectId(), 1, 1, 1, new Group()));
 		return cars;
 	}
 }

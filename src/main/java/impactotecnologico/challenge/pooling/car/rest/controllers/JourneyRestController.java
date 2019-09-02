@@ -37,14 +37,15 @@ public class JourneyRestController extends AbstractController {
 		Optional<Group> groupSaved = this.groupService.registerGroupForJourney(group);
 
 		if (groupSaved.isPresent()) {
-			Group data = groupSaved.get();
-			return responseWithEntity(data);
+			Group toAssign = groupSaved.get();
+			return responseWithEntity(toAssign);
 		} else {
 			throw new ProcessingDataException();
 		}
 	}
 
-	@RequestMapping(path = "/dropoff", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	@RequestMapping(path = "/dropoff", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public ResponseEntity<Void> unregisterGroup(@RequestParam(name = "ID") Integer id) throws IllegalArgumentException {
 
 		if (id == null || id <= 0) {

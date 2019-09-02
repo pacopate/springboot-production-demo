@@ -27,4 +27,14 @@ public class Car {
 	@Getter
 	@Setter
 	private int seats;
+
+	@Getter
+	@Setter
+	@JsonIgnore
+	private int seatsAvailables;
+
+	@Getter
+	@Setter
+	@JsonIgnore
+	private Group travelers;
 }

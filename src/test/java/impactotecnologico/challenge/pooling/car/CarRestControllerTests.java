@@ -26,17 +26,22 @@ import impactotecnologico.challenge.pooling.car.models.Car;
 import impactotecnologico.challenge.pooling.car.models.Group;
 import impactotecnologico.challenge.pooling.car.repositories.CarRepository;
 import impactotecnologico.challenge.pooling.car.rest.controllers.CarRestController;
+import impactotecnologico.challenge.pooling.car.rest.exceptions.EntityNotFoundException;
 import impactotecnologico.challenge.pooling.car.rest.exceptions.ProcessingDataException;
 import impactotecnologico.challenge.pooling.car.services.CarService;
+import impactotecnologico.challenge.pooling.car.services.GroupService;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CarRestControllerTests extends AbstractTest {
 
 	@Mock
-	private CarRepository carRepository;
+	private CarRepository carRepositoryMock;
 
 	@Mock
 	private CarService carServiceMock;
+
+	@Mock
+	private GroupService groupServiceMock;
 
 	@InjectMocks
 	private CarRestController carRestController;
@@ -48,7 +53,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test
-	public void testHeaders() throws Exception {
+	public void testUpdateHeaders() throws Exception {
 
 		String uri = "/cars";
 
@@ -70,7 +75,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test
-	public void testStatusCode200() throws Exception {
+	public void testUpdateStatusCode200() throws Exception {
 		String uri = "/cars";
 
 		List<Car> cars = carsGenerator();
@@ -86,7 +91,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test
-	public void testStatusCode400() throws Exception {
+	public void testUpdateStatusCode400() throws Exception {
 		String uri = "/cars";
 
 		List<Car> cars = new ArrayList<Car>();
@@ -102,9 +107,9 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = ProcessingDataException.class)
-	public void whenDeleteAllFails() {
+	public void whenUpdateDeleteAllFails() {
 
-		Mockito.doReturn(1L).when(carRepository).count();
+		Mockito.doReturn(1L).when(carRepositoryMock).count();
 
 		List<Car> cars = onlyOneCarGenerator();
 
@@ -115,13 +120,13 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void whenEmptyListReceived() {
+	public void whenUpdateEmptyListReceived() {
 		Mockito.doReturn(Optional.empty()).when(carServiceMock).refreshCarsAvailability(new LinkedList<Car>());
 		carRestController.update(new LinkedList<Car>());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void whenListWithZeroReceivedv1() {
+	public void whenUpdateListWithZeroReceivedv1() {
 		LinkedList<Car> cars = new LinkedList<Car>();
 		cars.add(new Car(new ObjectId(), 1, 0, 0, new Group()));
 
@@ -130,7 +135,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void whenListWithZeroReceivedv2() {
+	public void whenUpdateListWithZeroReceivedv2() {
 		LinkedList<Car> cars = new LinkedList<Car>();
 		cars.add(new Car(new ObjectId(), 0, 1, 0, new Group()));
 
@@ -139,7 +144,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test
-	public void whenIsOk() {
+	public void whenUpdateIsOk() {
 
 		List<Car> cars = onlyOneCarGenerator();
 
@@ -148,9 +153,8 @@ public class CarRestControllerTests extends AbstractTest {
 		try {
 			ResponseEntity<List<Car>> response = carRestController.update(cars);
 
-			List<Car> carsReturn = response.getBody();
 			Mockito.verify(carServiceMock, Mockito.times(1)).refreshCarsAvailability(cars);
-			Assert.assertEquals(cars, carsReturn);
+			Assert.assertEquals(cars, response.getBody());
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		}
@@ -158,7 +162,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = ProcessingDataException.class)
-	public void whenSaveAllFailsv1() {
+	public void whenUpdateSaveAllFailsv1() {
 
 		List<Car> cars = onlyOneCarGenerator();
 
@@ -169,7 +173,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = ProcessingDataException.class)
-	public void whenSaveAllFailsv2() {
+	public void whenUpdateSaveAllFailsv2() {
 
 		List<Car> cars = carsGenerator();
 
@@ -179,7 +183,7 @@ public class CarRestControllerTests extends AbstractTest {
 	}
 
 	@Test(expected = ProcessingDataException.class)
-	public void whenSaveAllFailsv3() {
+	public void whenUpdateSaveAllFailsv3() {
 
 		List<Car> cars = carsGenerator();
 
@@ -190,6 +194,84 @@ public class CarRestControllerTests extends AbstractTest {
 		carRestController.update(cars);
 
 	}
+
+	/* LOCATE TEST */
+
+	@Test(expected = IllegalArgumentException.class)
+	public void whenLocateInvalidInputReceivedv1() {
+
+		carRestController.locate(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void whenLocateInvalidInputReceivedv2() {
+
+		carRestController.locate(0);
+	}
+
+	@Test(expected = EntityNotFoundException.class)
+	public void whenLocateNotFoundAnyGroup() {
+
+		Mockito.when(groupServiceMock.locateGroup(1)).thenReturn(Optional.empty());
+		carRestController.locate(1);
+	}
+
+	@Test
+	public void whenLocateCarFoundForThisGroup() {
+
+		Group g = new Group();
+		Car c = new Car();
+
+		Mockito.doReturn(Optional.of(g)).when(groupServiceMock).locateGroup(1);
+
+		Mockito.doReturn(Optional.of(c)).when(carServiceMock).findCarByTravelers(g);
+
+		ResponseEntity<Car> car = carRestController.locate(1);
+
+		Assert.assertEquals(car.getBody(), c);
+	}
+
+	@Test
+	public void whenLocateCarNotFoundForThisGroup() {
+
+		Group g = new Group();
+
+		Mockito.doReturn(Optional.of(g)).when(groupServiceMock).locateGroup(1);
+
+		Mockito.doReturn(Optional.empty()).when(carServiceMock).findCarByTravelers(g);
+
+		ResponseEntity<Car> car = carRestController.locate(1);
+
+		Assert.assertFalse(car.hasBody());
+	}
+
+	@Test
+	public void testLocateStatusCode400() throws Exception {
+		String uri = "/locate";
+
+		String inputJson = super.mapToJson(0);
+		MvcResult mvcResult = mockMvc.perform(
+				MockMvcRequestBuilders.post(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+				.andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		Assert.assertEquals(400, status);
+
+	}
+
+	@Test
+	public void testLocateStatusCode404() throws Exception {
+		String uri = "/locate";
+
+		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(uri)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE).param("ID", "1")).andReturn();
+
+		int status = mvcResult.getResponse().getStatus();
+		Assert.assertEquals(404, status);
+
+	}
+
+	/* helpers */
 
 	private List<Car> carsGenerator() {
 		List<Car> cars = new ArrayList<Car>();

@@ -63,6 +63,14 @@ public class CarServiceImpl implements CarService {
 		return this.carRepository.findOneByTravelers(travelers);
 	}
 
+	/**
+	 * Private method to unify the validations for assign and unassign cars
+	 * 
+	 * @param group the group to assign or unassign
+	 * @param car   the car to manage seats
+	 * @param sum   boolean to indicate if we want lock of unlock seats
+	 * @return
+	 */
 	private Optional<Boolean> createReturn(Group group, Optional<Car> car, boolean sum) {
 		if (car.isPresent()) {
 			Car c = car.get();

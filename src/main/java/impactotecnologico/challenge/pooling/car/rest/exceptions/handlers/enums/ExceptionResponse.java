@@ -1,5 +1,11 @@
 package impactotecnologico.challenge.pooling.car.rest.exceptions.handlers.enums;
 
+/**
+ * Enum to identify errors with custom codes
+ * 
+ * @author JoseJulian
+ *
+ */
 public enum ExceptionResponse {
 
 	BIG_PROBLEM("big problems happen", 1000), NOT_READABLE("Your request couldn't be Readable", 1001),

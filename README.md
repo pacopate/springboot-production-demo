@@ -156,6 +156,32 @@ Responses:
 * **400 Bad Request** When there is a failure in the request format or the
   payload can't be unmarshaled.
 
+## Technologies
+
++ Java 8
++ Spring Boot 2.1.7
++ Maven 3
++ Mongo 3.6.9 Used from mlab.com as a Managed Database hosted in AWS
+
+### Spring Starters
+
++ Web
++ MongoDB
++ Actuator
++ Undertow
+
+### Java Dependencies
+
++ Lombok
++ Guava
++ Json
+
+## Maven Profiles
+
++ dev
++ prod
+
+
 ## Tooling
 
 At cabify, we use Gitlab and Gitlab CI for our backend development work. 

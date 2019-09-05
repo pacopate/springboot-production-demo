@@ -1,6 +1,16 @@
-FROM openjdk:8-jdk-slim
+FROM openjdk:8-jdk-alpine 
+#maven:3-jdk-8-slim
+
+COPY pom.xml /car-pooling-challenge/pom.xml
+COPY mvnw /car-pooling-challenge/mvnw
+COPY .mvn/ /car-pooling-challenge/.mvn
+COPY src/ /car-pooling-challenge/src
+
+WORKDIR /car-pooling-challenge
+
+RUN ./mvnw install -Pprod
+
+EXPOSE 8090
 EXPOSE 9091
 
-COPY . /car-pooling-challenge
- 
-ENTRYPOINT [ "/car-pooling-challenge" ]
+ENTRYPOINT ["java","-jar","/car-pooling-challenge/target/pooling.car-0.0.1.jar"]

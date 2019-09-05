@@ -11,7 +11,6 @@ WORKDIR /car-pooling-challenge
 
 COPY target/pooling.car-0.0.1.jar /car-pooling-challenge/
 
-EXPOSE 8090
 EXPOSE 9091
 
 ENTRYPOINT ["java","-jar","/car-pooling-challenge/pooling.car-0.0.1.jar"]

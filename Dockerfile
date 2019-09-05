@@ -1,5 +1,4 @@
-FROM openjdk:8-jdk-alpine 
-#maven:3-jdk-8-slim
+FROM maven:3-jdk-8-slim
 
 COPY pom.xml /car-pooling-challenge/pom.xml
 COPY mvnw /car-pooling-challenge/mvnw
@@ -8,7 +7,7 @@ COPY src/ /car-pooling-challenge/src
 
 WORKDIR /car-pooling-challenge
 
-RUN ./mvnw install -Pprod
+RUN mvn install -Pprod
 
 EXPOSE 8090
 EXPOSE 9091

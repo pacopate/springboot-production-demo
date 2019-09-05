@@ -20,12 +20,12 @@ remove_me:
 
 build:
   stage: build
-  image: openjdk:8-jdk-alpine
+  image: maven:3-jdk-8-slim
   artifacts:
     paths:
       - ./
   script:
-    - mvnw install -Pprod
+    - mvn install -Pprod
 
 # build_image:
 #   stage: docker

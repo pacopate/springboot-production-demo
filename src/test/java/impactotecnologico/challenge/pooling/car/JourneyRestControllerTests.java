@@ -14,6 +14,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MvcResult;
@@ -134,9 +135,9 @@ public class JourneyRestControllerTests extends AbstractTest {
 
 		Group valid = generateValidGroup();
 		Mockito.doReturn(Optional.of(valid)).when(groupService).registerGroupForJourney(valid);
-		ResponseEntity<Group> response = journeyRestController.registerGroup(valid);
+		ResponseEntity<Void> response = journeyRestController.registerGroup(valid);
 
-		Assert.assertEquals(valid, response.getBody());
+		Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 
 	}
 

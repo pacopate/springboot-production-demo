@@ -60,7 +60,7 @@ public class CarRestController extends AbstractController {
 
 	@RequestMapping(path = "/locate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Car> locate(@RequestParam(name = "ID") Integer id) throws IllegalArgumentException {
+	public ResponseEntity<Void> locate(@RequestParam(name = "ID") Integer id) throws IllegalArgumentException {
 
 		if (id == null || id <= 0) {
 			throw new IllegalArgumentException();
@@ -72,7 +72,7 @@ public class CarRestController extends AbstractController {
 
 			Optional<Car> car = this.carService.findCarByTravelers(group.get());
 			if (car.isPresent()) {
-				return responseWithEntity(car.get());
+				return new ResponseEntity<>(HttpStatus.OK);
 			} else {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}

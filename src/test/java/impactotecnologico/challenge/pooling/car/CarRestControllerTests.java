@@ -17,6 +17,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MvcResult;
@@ -226,9 +227,9 @@ public class CarRestControllerTests extends AbstractTest {
 
 		Mockito.doReturn(Optional.of(c)).when(carServiceMock).findCarByTravelers(g);
 
-		ResponseEntity<Car> car = carRestController.locate(1);
+		ResponseEntity<Void> response = carRestController.locate(1);
 
-		Assert.assertEquals(car.getBody(), c);
+		Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	@Test
@@ -240,9 +241,9 @@ public class CarRestControllerTests extends AbstractTest {
 
 		Mockito.doReturn(Optional.empty()).when(carServiceMock).findCarByTravelers(g);
 
-		ResponseEntity<Car> car = carRestController.locate(1);
+		ResponseEntity<Void> response = carRestController.locate(1);
 
-		Assert.assertFalse(car.hasBody());
+		Assert.assertFalse(response.hasBody());
 	}
 
 	@Test

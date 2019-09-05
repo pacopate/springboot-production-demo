@@ -27,7 +27,7 @@ public class JourneyRestController extends AbstractController {
 
 	@PostMapping("/journey")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<Group> registerGroup(@RequestBody Group group) throws IllegalArgumentException {
+	public ResponseEntity<Void> registerGroup(@RequestBody Group group) throws IllegalArgumentException {
 		Verifications.checkIfNotNull(group);
 
 		if (group.getExternalId() <= 0 || group.getPeople() <= 0) {
@@ -37,8 +37,7 @@ public class JourneyRestController extends AbstractController {
 		Optional<Group> groupSaved = this.groupService.registerGroupForJourney(group);
 
 		if (groupSaved.isPresent()) {
-			Group toAssign = groupSaved.get();
-			return responseWithEntity(toAssign);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			throw new ProcessingDataException();
 		}

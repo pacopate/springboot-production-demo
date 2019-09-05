@@ -47,7 +47,10 @@ public class GroupServiceImpl implements GroupService {
 		if (found.isPresent()) {
 
 			this.carService.unassignGroupToCar(found.get());
-			this.journeyRepository.deleteOneByExternalId(id);
+			// is comment because, in my logic, when I unregister a group via dropoff, that
+			// group should be removed from the database but, the acceptance test require
+			// keep the group in the database
+			// this.journeyRepository.deleteOneByExternalId(id);
 			return Optional.of(true);
 		} else {
 			throw new EntityNotFoundException();

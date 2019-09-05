@@ -264,7 +264,7 @@ public class CarRestControllerTests extends AbstractTest {
 		String uri = "/locate";
 
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(uri)
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE).param("ID", "1")).andReturn();
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE).param("ID", "9999999")).andReturn();
 
 		int status = mvcResult.getResponse().getStatus();
 		Assert.assertEquals(404, status);

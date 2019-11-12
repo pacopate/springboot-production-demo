@@ -2,7 +2,7 @@ FROM maven:3-jdk-8-slim
 
 WORKDIR /car-pooling-challenge
 
-# Local version
+# Builder version
 #COPY pom.xml /car-pooling-challenge/pom.xml
 #COPY mvnw /car-pooling-challenge/mvnw
 #COPY .mvn/ /car-pooling-challenge/.mvn
